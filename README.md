@@ -600,7 +600,6 @@ update-tools
 
 [![GitHub](https://img.shields.io/badge/GitHub-vulnquest58-181717?style=for-the-badge&logo=github)](https://github.com/vulnquest58)
 
-> *"The quieter you become, the more you are able to hear."*
 
 ---
 
