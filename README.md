@@ -69,7 +69,7 @@ Kali Master Framework is a fully automated, single-file Bash script that transfo
 
 | Requirement | Minimum | Recommended |
 |------------|---------|-------------|
-| OS | Kali Linux 2023.x | Kali Linux 2024.x (latest) |
+| OS | Kali Linux 2023.x | Kali Linux 2026.x (latest) |
 | RAM | 4 GB | 8 GB+ |
 | Disk | 15 GB free | 40 GB+ free |
 | Network | Required | Stable broadband |
