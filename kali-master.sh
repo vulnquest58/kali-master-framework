@@ -34,7 +34,7 @@ set -uo pipefail
 
 # ─── Version & Script Info ──────────────────────────────────
 readonly VERSION="6.7.0"
-readonly SCRIPT_NAME="kali_master_v6.7.0.sh"
+readonly SCRIPT_NAME="kali-master.sh"
 readonly LOG_FILE="/var/log/kali_master_v6_$(date +%Y%m%d_%H%M%S).log"
 
 # ─── Configuration Directories ──────────────────────────────
@@ -16693,7 +16693,7 @@ show_fix() {
         done
         echo ""
         echo -e "  ${CYAN}To install missing tools, run:${RESET}"
-        echo -e "    ${BOLD}sudo ./kali_master_v6.7.0.sh --fix${RESET}"
+        echo -e "    ${BOLD}sudo ./kali-master.sh --fix${RESET}"
         echo ""
     else
         echo -e "  ${GREEN}${BOLD}🎉 All checked tools are installed!${RESET}"
@@ -17740,7 +17740,7 @@ check_tools_status() {
         echo -e "  ${YELLOW}${BOLD}⚠ ${missing_count} tool(s) missing${RESET}"
         echo ""
         echo -e "  ${BOLD}To fix missing tools:${RESET}"
-        echo -e "    ${CYAN}./kali_master_v6.7.0.sh --fix${RESET}     ${DIM}→ Fix all missing${RESET}"
+        echo -e "    ${CYAN}./kali-master.sh --fix${RESET}     ${DIM}→ Fix all missing${RESET}"
         echo -e "    ${CYAN}kali-master --fix${RESET}                 ${DIM}→ Alternative command${RESET}"
     fi
     
@@ -18078,7 +18078,7 @@ do_health_check() {
         echo ""
         echo -e "  ${BOLD}To fix missing tools:${RESET}"
         echo -e "    ${CYAN}kali-master --fix${RESET}         ${DIM}→ Fix all missing${RESET}"
-        echo -e "    ${CYAN}./kali_master_v6.7.0.sh --fix${RESET}  ${DIM}→ Alternative command${RESET}"
+        echo -e "    ${CYAN}./kali-master.sh --fix${RESET}  ${DIM}→ Alternative command${RESET}"
     else
         echo -e "  ${GREEN}${BOLD}🎉 All tools are installed!${RESET}"
     fi
@@ -18466,10 +18466,10 @@ parse_args() {
                 echo -e "  ${DIM}25.${RESET} dashboard         ${DIM}26.${RESET} health_check       ${DIM}27.${RESET} final_summary"
                 echo ""
                 echo -e "${BOLD}Examples:${RESET}"
-                echo -e "  ${CYAN}sudo ./kali_master_v6.7.0.sh --minimal${RESET}"
-                echo -e "  ${CYAN}sudo ./kali_master_v6.7.0.sh --step redteam_c2 --force${RESET}"
-                echo -e "  ${CYAN}sudo ./kali_master_v6.7.0.sh --fix${RESET}"
-                echo -e "  ${CYAN}sudo ./kali_master_v6.7.0.sh --reset-all${RESET}"
+                echo -e "  ${CYAN}sudo ./kali-master.sh --minimal${RESET}"
+                echo -e "  ${CYAN}sudo ./kali-master.sh --step redteam_c2 --force${RESET}"
+                echo -e "  ${CYAN}sudo ./kali-master.sh --fix${RESET}"
+                echo -e "  ${CYAN}sudo ./kali-master.sh --reset-all${RESET}"
                 exit 0
                 ;;
             *) 
@@ -18494,6 +18494,62 @@ require_ok() {
 }
 
 # ============================================================
+# Self-Update Logic
+# ============================================================
+check_self_update() {
+    # Check if curl is available
+    if ! command -v curl &>/dev/null; then
+        return 0
+    fi
+
+    # Avoid infinite loop if relaunching after update
+    if [[ "${KALI_MASTER_UPDATED:-0}" == "1" ]]; then
+        return 0
+    fi
+
+    local repo_url="https://raw.githubusercontent.com/vulnquest58/kali-master-framework/main/kali-master.sh"
+    info "Checking for updates..."
+    
+    local remote_version
+    remote_version=$(curl -s --max-time 5 "$repo_url" | grep -E '^readonly VERSION=' | head -1 | cut -d'"' -f2)
+
+    if [[ -n "$remote_version" && "$remote_version" != "$VERSION" ]]; then
+        warn "New version detected: v${remote_version} (Current: v${VERSION})"
+        info "Downloading update..."
+        
+        local tmp_file
+        tmp_file=$(mktemp)
+        if curl -fsSL --max-time 30 -o "$tmp_file" "$repo_url"; then
+            # Verify the downloaded file is valid
+            if grep -q "readonly VERSION=" "$tmp_file"; then
+                local script_path
+                script_path=$(readlink -f "$0" 2>/dev/null || realpath "$0" 2>/dev/null || echo "$0")
+                
+                # Try to write update
+                if cp "$tmp_file" "$script_path" 2>/dev/null; then
+                    chmod +x "$script_path" 2>/dev/null
+                    rm -f "$tmp_file"
+                    ok "Updated successfully to v${remote_version}! Relaunching script..."
+                    echo ""
+                    sleep 1
+                    export KALI_MASTER_UPDATED=1
+                    exec bash "$script_path" "$@"
+                else
+                    warn "Failed to write update to $script_path (permission error?)"
+                fi
+            else
+                warn "Downloaded file signature check failed"
+            fi
+        else
+            warn "Failed to download update"
+        fi
+        rm -f "$tmp_file"
+    else
+        ok "Already up to date (v${VERSION})"
+    fi
+}
+
+# ============================================================
 # Main Execution
 # ============================================================
 main() {
@@ -18509,6 +18565,9 @@ main() {
     # Ensure log directory and file exist
     mkdir -p "$(dirname "$LOG_FILE")"
     touch "$LOG_FILE"
+
+    # Check for self updates before anything else
+    check_self_update "$@"
 
     # Set up trap for graceful exit on Ctrl+C or termination
     trap 'echo -e "\n${BOLD}${YELLOW}[!]${RESET} Installation interrupted by user. Exiting..."; exit 130' INT TERM

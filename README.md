@@ -139,22 +139,22 @@ git clone https://github.com/vulnquest58/kali-master-framework.git
 cd kali-master-framework
 
 # Make executable
-chmod +x kali_master_v6.7.0.sh
+chmod +x kali-master.sh
 
 # Full installation (recommended)
-sudo bash kali_master_v6.7.0.sh
+sudo bash kali-master.sh
 
 # Lightweight install (core tools only)
-sudo bash kali_master_v6.7.0.sh --minimal
+sudo bash kali-master.sh --minimal
 
 # Run auto-fix only (repair missing tools)
-sudo bash kali_master_v6.7.0.sh --fix
+sudo bash kali-master.sh --fix
 
 # Run specific step
-sudo bash kali_master_v6.7.0.sh --step redteam_c2 --force
+sudo bash kali-master.sh --step redteam_c2 --force
 
 # With GitHub token (avoids rate limits)
-GITHUB_TOKEN=ghp_xxx sudo bash kali_master_v6.7.0.sh
+GITHUB_TOKEN=ghp_xxx sudo bash kali-master.sh
 ```
 
 ---
@@ -162,7 +162,7 @@ GITHUB_TOKEN=ghp_xxx sudo bash kali_master_v6.7.0.sh
 ## 🎮 Usage
 
 ```
-Usage: kali_master_v6.7.0.sh [OPTIONS]
+Usage: kali-master.sh [OPTIONS]
 
 Options:
   (no options)         Full installation — all 25 steps
@@ -186,10 +186,10 @@ Available Steps:
   25. dashboard
 
 Examples:
-  sudo bash kali_master_v6.7.0.sh --step bugbounty
-  sudo bash kali_master_v6.7.0.sh --reset redteam_c2 --step redteam_c2
-  sudo bash kali_master_v6.7.0.sh --force
-  GITHUB_TOKEN=ghp_xxx sudo bash kali_master_v6.7.0.sh
+  sudo bash kali-master.sh --step bugbounty
+  sudo bash kali-master.sh --reset redteam_c2 --step redteam_c2
+  sudo bash kali-master.sh --force
+  GITHUB_TOKEN=ghp_xxx sudo bash kali-master.sh
 ```
 
 ---
@@ -201,7 +201,7 @@ Examples:
 Installs all 25 steps including C2 frameworks, EDR evasion tools, post-exploitation kit, AD attack tools, cloud security, and redirector automation.
 
 ```bash
-sudo bash kali_master_v6.7.0.sh
+sudo bash kali-master.sh
 ```
 
 ### Minimal Mode
@@ -209,7 +209,7 @@ sudo bash kali_master_v6.7.0.sh
 Installs only core dependencies, Go, Python venv, and essential network tools. Skips Docker, reversing tools, CTF extras, C2 frameworks, evasion tools, and post-exploit kit.
 
 ```bash
-sudo bash kali_master_v6.7.0.sh --minimal
+sudo bash kali-master.sh --minimal
 ```
 
 ### Fix Mode
@@ -217,7 +217,7 @@ sudo bash kali_master_v6.7.0.sh --minimal
 Scans for missing or broken tools and attempts repair using the three-tier fallback engine. Does not re-run any installation steps.
 
 ```bash
-sudo bash kali_master_v6.7.0.sh --fix
+sudo bash kali-master.sh --fix
 ```
 
 ---
