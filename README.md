@@ -1,4 +1,4 @@
-# Kali Master Framework v6.7.0
+# kali-master.sh "update"
 
 > **Ultimate Offensive Security Platform — Built for Elite Practitioners**
 >
@@ -15,7 +15,7 @@
  ╚═╝ ╚═╝ ╚═╝  ╚═╝╚══════╝╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
 ```
 
-[![Version](https://img.shields.io/badge/version-6.7.0-magenta?style=flat-square)](https://github.com/vulnquest58)
+[![Version](https://img.shields.io/badge/version-"update"-magenta?style=flat-square)](https://github.com/vulnquest58)
 [![Platform](https://img.shields.io/badge/platform-Kali%20Linux-blue?style=flat-square&logo=kalilinux)](https://www.kali.org/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Author](https://img.shields.io/badge/author-vulnquest58-red?style=flat-square&logo=github)](https://github.com/vulnquest58)
@@ -31,7 +31,7 @@
 ## 📋 Table of Contents
 
 - [Overview](#overview)
-- [What's New in v6.7.0](#whats-new-in-v670)
+- [What's New in "update"](#whats-new-in-update)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -49,7 +49,7 @@
 
 ## 🎯 Overview
 
-**Kali Master Framework v6.7.0** is a fully automated, single-file Bash script that transforms a fresh Kali Linux installation into a complete offensive security workstation. It is designed for practitioners who work across multiple disciplines simultaneously — bug bounty, red teaming, reverse engineering, competitive CTF platforms, Active Directory attacks, cloud security, and EDR evasion.
+**kali-master.sh "update"** is a fully automated, single-file Bash script that transforms a fresh Kali Linux installation into a complete offensive security workstation. It is designed for practitioners who work across multiple disciplines simultaneously — bug bounty, red teaming, reverse engineering, competitive CTF platforms, Active Directory attacks, cloud security, and EDR evasion.
 
 ### ✨ Key Features
 
@@ -68,7 +68,7 @@
 
 ---
 
-## 🆕 What's New in v6.7.0
+## 🆕 What's New in "update"
 
 ### 🎉 Major Additions (36+ New Tools)
 
@@ -228,7 +228,7 @@ sudo bash kali-master.sh --fix
 
 ```
 ╔═══════════════════════════════════════════════════════╗
-║   KALI MASTER FRAMEWORK v6.7.0                        ║
+║   kali-master.sh "update"                             ║
 ║   Ultimate Offensive Security Platform                ║
 ╚═══════════════════════════════════════════════════════╝
 
@@ -359,7 +359,7 @@ sudo bash kali-master.sh --fix
     [████████████████████████████████████████████████████] 100%
 
 ═══════════════════════════════════════════════════════
-  🎉 KALI MASTER FRAMEWORK v6.7.0 — READY FOR ACTION! 🎉
+  🎉 kali-master.sh "update" — READY FOR ACTION! 🎉
 ═══════════════════════════════════════════════════════
 
   Duration:       58m 34s
@@ -403,7 +403,7 @@ sudo bash kali-master.sh --fix
 
   INSTALLATION INFO
   ────────────────────────────────────────────────────────
-  Version:       Kali Master Framework v6.7.0
+  Version:       kali-master.sh "update"
   Duration:      58m 34s
   Log File:      /var/log/kali_master_v6_20260604_172426.log
   Completed:     2026-06-04 18:27:02
@@ -428,7 +428,7 @@ sudo bash kali-master.sh --fix
     5. Start exploring: c2-menu or lab-manager
 
 ═══════════════════════════════════════════════════════
-  🎉 KALI MASTER FRAMEWORK v6.7.0 — READY FOR ACTION! 🎉
+  🎉 kali-master.sh "update" — READY FOR ACTION! 🎉
 ═══════════════════════════════════════════════════════
 
   Thank you for using Kali Master Framework!
@@ -1859,7 +1859,7 @@ kali-master [command]
 ```
 ╔═══════════════════════════════════════════════════════╗
 ║   KALI MASTER FRAMEWORK — PROFESSIONAL DASHBOARD      ║
-║   v6.7.0 • Bug Bounty • Red Team • C2 • Labs          ║
+║   "update" • Bug Bounty • Red Team • C2 • Labs        ║
 ╚═══════════════════════════════════════════════════════╝
 
 [SYSTEM INFORMATION]
