@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# modules/02_system_update.sh
+# modules/02_system_update.sh — Kali Master Framework v7.0.0
 
 do_system_update() {
     clear
