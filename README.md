@@ -1,6 +1,11 @@
+<p align="center">
+  <img src="assets/logo.png" alt="Kali Master Framework Logo" width="800">
+</p>
+
 # Kali Master Framework v7.0.0
 
 <div align="center">
+
 
 ```
   ██╗ ██╗  █████╗ ██╗     ██╗    ███╗   ███╗ █████╗ ███████╗████████╗███████╗██████╗
