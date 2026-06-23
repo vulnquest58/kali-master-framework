@@ -1,21 +1,11 @@
+# Kali Master Framework v7.0.0
+
 <p align="center">
   <img src="assets/logo.png" alt="Kali Master Framework Logo" width="800">
 </p>
 
-# Kali Master Framework v7.0.0
-
 <div align="center">
-
-
-```
-  ██╗ ██╗  █████╗ ██╗     ██╗    ███╗   ███╗ █████╗ ███████╗████████╗███████╗██████╗
-  ██║ ██╔╝██╔══██╗██║     ██║    ████╗ ████║██╔══██╗██╔════╝╚══██╔══╝██╔════╝██╔══██╗
-  █████╔╝ ███████║██║     ██║    ██╔████╔██║███████║███████╗   ██║   █████╗  ██████╔╝
-  ██╔═██╗ ██╔══██║██║     ██║    ██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗
-  ██║ ██╗ ██║  ██║███████╗██║    ██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║
-  ╚═╝ ╚═╝ ╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
-```
-
+  
 **Ultimate Offensive Security Platform for Kali Linux**
 
 [![Version](https://img.shields.io/badge/version-7.0.0-blueviolet?style=for-the-badge)](https://github.com/vulnquest58)
