@@ -1268,20 +1268,322 @@ BB_RECON
     ((tools_installed++))
     
     # ========================================================
-    # 2-12. Other Helper Scripts (Keep existing ones as-is)
+    # 2. newbb — Bug Bounty Workspace Creator
     # ========================================================
-    
-    # Create remaining scripts (newbb, newctf, newad, newpayload, port-scan, 
-    # vuln-scan, sub-enum, dir-fuzz, js-recon, report-gen, newredteam)
-    # These are kept as provided in the original code
-    
-    # [Skipping full code for brevity - keeping original implementations]
-    
-    for script in newbb newctf newad newpayload port-scan vuln-scan sub-enum dir-fuzz js-recon report-gen newredteam; do
-        # These would contain the full implementations from the original code
-        echo -e "  ${GREEN}[✔]${RESET} $script"
-        ((tools_installed++))
-    done
+    cat > "${LOCAL_BIN}/newbb" << 'NEWBB'
+#!/usr/bin/env bash
+set -euo pipefail
+DOMAIN="${1:-}"
+if [[ -z "$DOMAIN" ]]; then
+    echo "Usage: newbb <domain>"
+    exit 1
+fi
+BASE_DIR="$HOME/bugbounty/$DOMAIN"
+mkdir -p "$BASE_DIR"/{subdomains,http,ports,vulns,js,urls,params,notes,api,cloud,screenshots,reports,content,tech}
+cat > "$BASE_DIR/notes/notes.txt" << EOF
+Target: $DOMAIN
+Created: $(date)
+EOF
+echo "[✔] Workspace created for Bug Bounty: $BASE_DIR"
+NEWBB
+    chmod +x "${LOCAL_BIN}/newbb"
+    echo -e "  ${GREEN}[✔]${RESET} newbb — Bug Bounty Workspace Creator"
+    ((tools_installed++))
+
+    # ========================================================
+    # 3. newctf — CTF Workspace Creator
+    # ========================================================
+    cat > "${LOCAL_BIN}/newctf" << 'NEWCTF'
+#!/usr/bin/env bash
+set -euo pipefail
+NAME="${1:-}"
+if [[ -z "$NAME" ]]; then
+    echo "Usage: newctf <name>"
+    exit 1
+fi
+BASE_DIR="$HOME/ctf/$NAME"
+mkdir -p "$BASE_DIR"/{nmap,exploits,payloads,loot,notes,web,pwn,crypto,re}
+cat > "$BASE_DIR/notes/notes.txt" << EOF
+CTF: $NAME
+Created: $(date)
+EOF
+echo "[✔] Workspace created for CTF: $BASE_DIR"
+NEWCTF
+    chmod +x "${LOCAL_BIN}/newctf"
+    echo -e "  ${GREEN}[✔]${RESET} newctf — CTF Workspace Creator"
+    ((tools_installed++))
+
+    # ========================================================
+    # 4. newad — Active Directory Workspace Creator
+    # ========================================================
+    cat > "${LOCAL_BIN}/newad" << 'NEWAD'
+#!/usr/bin/env bash
+set -euo pipefail
+DOMAIN="${1:-}"
+if [[ -z "$DOMAIN" ]]; then
+    echo "Usage: newad <domain>"
+    exit 1
+fi
+BASE_DIR="$HOME/ad/$DOMAIN"
+mkdir -p "$BASE_DIR"/{recon,bloodhound,ldap,kerberos,loot,credentials,notes,exploits}
+cat > "$BASE_DIR/notes/notes.txt" << EOF
+Domain: $DOMAIN
+Created: $(date)
+EOF
+echo "[✔] Workspace created for AD: $BASE_DIR"
+NEWAD
+    chmod +x "${LOCAL_BIN}/newad"
+    echo -e "  ${GREEN}[✔]${RESET} newad — AD Workspace Creator"
+    ((tools_installed++))
+
+    # ========================================================
+    # 5. newpayload — Payload Project Creator
+    # ========================================================
+    cat > "${LOCAL_BIN}/newpayload" << 'NEWPAYLOAD'
+#!/usr/bin/env bash
+set -euo pipefail
+NAME="${1:-}"
+if [[ -z "$NAME" ]]; then
+    echo "Usage: newpayload <name>"
+    exit 1
+fi
+BASE_DIR="$HOME/payloads/$NAME"
+mkdir -p "$BASE_DIR"/{src,bin,obfuscation,templates,notes}
+cat > "$BASE_DIR/notes/notes.txt" << EOF
+Payload Project: $NAME
+Created: $(date)
+EOF
+echo "[✔] Workspace created for Payload Development: $BASE_DIR"
+NEWPAYLOAD
+    chmod +x "${LOCAL_BIN}/newpayload"
+    echo -e "  ${GREEN}[✔]${RESET} newpayload — Payload Project Creator"
+    ((tools_installed++))
+
+    # ========================================================
+    # 6. newredteam — Red Team Operation Creator
+    # ========================================================
+    cat > "${LOCAL_BIN}/newredteam" << 'NEWREDTEAM'
+#!/usr/bin/env bash
+set -euo pipefail
+NAME="${1:-}"
+if [[ -z "$NAME" ]]; then
+    echo "Usage: newredteam <name>"
+    exit 1
+fi
+BASE_DIR="$HOME/redteam/$NAME"
+mkdir -p "$BASE_DIR"/{recon,c2,redirectors,payloads,postexploit,credentials,loot,reports,notes}
+cat > "$BASE_DIR/notes/notes.txt" << EOF
+Red Team Project: $NAME
+Created: $(date)
+EOF
+echo "[✔] Workspace created for Red Team Operation: $BASE_DIR"
+NEWREDTEAM
+    chmod +x "${LOCAL_BIN}/newredteam"
+    echo -e "  ${GREEN}[✔]${RESET} newredteam — Red Team Operation Creator"
+    ((tools_installed++))
+
+    # ========================================================
+    # 7. sub-enum — Subdomain Enumeration
+    # ========================================================
+    cat > "${LOCAL_BIN}/sub-enum" << 'SUB_ENUM'
+#!/usr/bin/env bash
+set -euo pipefail
+DOMAIN="${1:-}"
+if [[ -z "$DOMAIN" ]]; then
+    echo "Usage: sub-enum <domain> [output_file]"
+    exit 1
+fi
+OUT_FILE="${2:-subdomains.txt}"
+echo "[*] Starting subdomain enumeration for $DOMAIN..."
+TEMP_DIR=$(mktemp -d)
+trap 'rm -rf "$TEMP_DIR"' EXIT
+
+if command -v subfinder &>/dev/null; then
+    echo "[*] Running subfinder..."
+    subfinder -d "$DOMAIN" -silent -o "$TEMP_DIR/subfinder.txt" || true
+fi
+
+if command -v assetfinder &>/dev/null; then
+    echo "[*] Running assetfinder..."
+    assetfinder --subs-only "$DOMAIN" > "$TEMP_DIR/assetfinder.txt" || true
+fi
+
+echo "[*] Querying CRT.sh..."
+curl -s "https://crt.sh/?q=%25.${DOMAIN}&output=json" | jq -r '.[].name_value' 2>/dev/null | sed 's/\*\.//g' | sort -u > "$TEMP_DIR/crtsh.txt" || true
+
+cat "$TEMP_DIR"/*.txt 2>/dev/null | sort -u > "$OUT_FILE"
+TOTAL=$(wc -l < "$OUT_FILE" 2>/dev/null || echo 0)
+echo "[✔] Enumeration complete. Found $TOTAL unique subdomains. Results saved to $OUT_FILE"
+SUB_ENUM
+    chmod +x "${LOCAL_BIN}/sub-enum"
+    echo -e "  ${GREEN}[✔]${RESET} sub-enum — Subdomain Enumeration Wrapper"
+    ((tools_installed++))
+
+    # ========================================================
+    # 8. js-recon — JavaScript Analysis Tool
+    # ========================================================
+    cat > "${LOCAL_BIN}/js-recon" << 'JS_RECON'
+#!/usr/bin/env bash
+set -euo pipefail
+URL="${1:-}"
+if [[ -z "$URL" ]]; then
+    echo "Usage: js-recon <url> [output_dir]"
+    exit 1
+fi
+OUT_DIR="${2:-js-recon-out}"
+mkdir -p "$OUT_DIR"
+echo "[*] Starting JavaScript analysis for $URL..."
+
+if command -v subjs &>/dev/null; then
+    echo "[*] Running subjs..."
+    echo "$URL" | subjs > "$OUT_DIR/js_links.txt" || true
+else
+    echo "[*] Fetching URL and extracting JS links..."
+    curl -s "$URL" | grep -oE 'src="[^"]+\.js"' | cut -d'"' -f2 > "$OUT_DIR/js_links.txt" || true
+fi
+
+if [[ -f "$OUT_DIR/js_links.txt" ]]; then
+    echo "[*] Found $(wc -l < "$OUT_DIR/js_links.txt") JS links. Fetching and scanning for secrets..."
+    while read -r link; do
+        [[ "$link" != http* ]] && link="${URL%/}/${link#/}"
+        echo "  [~] Checking: $link"
+        curl -s "$link" | grep -E -o "([a-zA-Z0-9_-]{24,40})" >> "$OUT_DIR/potential_keys.txt" || true
+    done < "$OUT_DIR/js_links.txt"
+fi
+echo "[✔] JS analysis complete. Results saved in $OUT_DIR/"
+JS_RECON
+    chmod +x "${LOCAL_BIN}/js-recon"
+    echo -e "  ${GREEN}[✔]${RESET} js-recon — JavaScript Analysis Wrapper"
+    ((tools_installed++))
+
+    # ========================================================
+    # 9. port-scan — Fast Port Scanner
+    # ========================================================
+    cat > "${LOCAL_BIN}/port-scan" << 'PORT_SCAN'
+#!/usr/bin/env bash
+set -euo pipefail
+TARGET="${1:-}"
+if [[ -z "$TARGET" ]]; then
+    echo "Usage: port-scan <target> [output_file]"
+    exit 1
+fi
+OUT_FILE="${2:-ports.txt}"
+
+if command -v naabu &>/dev/null; then
+    echo "[*] Running naabu scan on $TARGET..."
+    naabu -host "$TARGET" -silent -top-ports 1000 -o "$OUT_FILE" || true
+elif command -v nmap &>/dev/null; then
+    echo "[*] Running nmap scan on $TARGET..."
+    nmap -Pn -T4 --top-ports 1000 "$TARGET" -oG - | grep "Ports:" > "$OUT_FILE" || true
+else
+    echo "[✗] Neither naabu nor nmap is installed!"
+    exit 1
+fi
+echo "[✔] Port scan complete. Results saved to $OUT_FILE"
+PORT_SCAN
+    chmod +x "${LOCAL_BIN}/port-scan"
+    echo -e "  ${GREEN}[✔]${RESET} port-scan — Port Scanner Wrapper"
+    ((tools_installed++))
+
+    # ========================================================
+    # 10. vuln-scan — Vulnerability Scanner Wrapper
+    # ========================================================
+    cat > "${LOCAL_BIN}/vuln-scan" << 'VULN_SCAN'
+#!/usr/bin/env bash
+set -euo pipefail
+TARGET="${1:-}"
+if [[ -z "$TARGET" ]]; then
+    echo "Usage: vuln-scan <target> [output_file]"
+    exit 1
+fi
+OUT_FILE="${2:-vulns.txt}"
+
+if command -v nuclei &>/dev/null; then
+    echo "[*] Running Nuclei scan on $TARGET..."
+    nuclei -u "$TARGET" -severity low,medium,high,critical -silent -o "$OUT_FILE" || true
+else
+    echo "[✗] Nuclei is not installed!"
+    exit 1
+fi
+echo "[✔] Vulnerability scan complete. Results saved to $OUT_FILE"
+VULN_SCAN
+    chmod +x "${LOCAL_BIN}/vuln-scan"
+    echo -e "  ${GREEN}[✔]${RESET} vuln-scan — Vulnerability Scanner Wrapper"
+    ((tools_installed++))
+
+    # ========================================================
+    # 11. dir-fuzz — Directory Fuzzing Wrapper
+    # ========================================================
+    cat > "${LOCAL_BIN}/dir-fuzz" << 'DIR_FUZZ'
+#!/usr/bin/env bash
+set -euo pipefail
+URL="${1:-}"
+if [[ -z "$URL" ]]; then
+    echo "Usage: dir-fuzz <url> [wordlist]"
+    exit 1
+fi
+WORDLIST="${2:-}"
+if [[ -z "$WORDLIST" ]]; then
+    WORDLIST="/usr/share/wordlists/dirb/common.txt"
+    [[ ! -f "$WORDLIST" ]] && WORDLIST="/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt"
+fi
+
+if [[ ! -f "$WORDLIST" ]]; then
+    echo "[✗] Wordlist not found: $WORDLIST"
+    exit 1
+fi
+OUT_FILE="fuzz_results.txt"
+echo "[*] Starting directory fuzzing on $URL using $WORDLIST..."
+
+if command -v ffuf &>/dev/null; then
+    [[ "$URL" != *FUZZ* ]] && URL="${URL%/}/FUZZ"
+    ffuf -u "$URL" -w "$WORDLIST" -mc 200,204,301,302,307,401,403 -ac -o "$OUT_FILE" -of md || true
+elif command -v dirsearch &>/dev/null; then
+    dirsearch -u "$URL" -w "$WORDLIST" -o "$OUT_FILE" || true
+else
+    echo "[✗] Neither ffuf nor dirsearch is installed!"
+    exit 1
+fi
+echo "[✔] Fuzzing complete. Results saved to $OUT_FILE"
+DIR_FUZZ
+    chmod +x "${LOCAL_BIN}/dir-fuzz"
+    echo -e "  ${GREEN}[✔]${RESET} dir-fuzz — Directory Fuzzer Wrapper"
+    ((tools_installed++))
+
+    # ========================================================
+    # 12. report-gen — Workspace Report Generator
+    # ========================================================
+    cat > "${LOCAL_BIN}/report-gen" << 'REPORT_GEN'
+#!/usr/bin/env bash
+set -euo pipefail
+DIR="${1:-.}"
+if [[ ! -d "$DIR" ]]; then
+    echo "Usage: report-gen <directory>"
+    exit 1
+fi
+REPORT="$DIR/workspace_report.md"
+echo "[*] Generating report for $DIR..."
+cat > "$REPORT" << EOF
+# Workspace Report
+- Generated: \$(date)
+- Target Directory: $DIR
+
+## Workspace Contents
+EOF
+
+find "$DIR" -maxdepth 2 -not -path '*/.*' | sort | while read -r path; do
+    if [[ -d "$path" ]]; then
+        echo "### \$(basename "\$path")/" >> "\$REPORT"
+    elif [[ -f "$path" ]]; then
+        echo "- \$(basename "\$path") (\$(du -sh "\$path" | cut -f1))" >> "\$REPORT"
+    fi
+done
+echo "[✔] Report generated: $REPORT"
+REPORT_GEN
+    chmod +x "${LOCAL_BIN}/report-gen"
+    echo -e "  ${GREEN}[✔]${RESET} report-gen — Workspace Report Generator"
+    ((tools_installed++))
+
     
     # ========================================================
     # 13. NEW: api-recon — API Reconnaissance
